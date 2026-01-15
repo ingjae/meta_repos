@@ -1,0 +1,17 @@
+repositories:
+  robot_common:
+    type: git
+    url: ../robot_common
+    version: main
+  robot_interfaces:
+    type: git
+    url: ../robot_interfaces
+    version: main
+  robot_main:
+    type: git
+    url: ../robot_main
+    version: main
+  robot_tools:
+    type: git
+    url: ../robot_tools
+    version: main
