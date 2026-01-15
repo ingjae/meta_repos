@@ -8,105 +8,75 @@ ROS2 멀티-레포지토리 로봇 워크스페이스
 # 1. 사전 요구사항: ROS2 및 vcstool 설치
 sudo apt install python3-vcstool
 
-# 2. 워크스페이스 생성 및 모든 저장소 클론
+# 2. 워크스페이스 생성 및 meta_repos 클론
 mkdir -p ~/robot_ws && cd ~/robot_ws
 git clone https://github.com/ingjae/meta_repos.git
-vcs import < meta_repos/robot.repos
 
-# 3. ROS2 의존성 설치
+# 3. 담당 로봇에 맞는 저장소 클론
+vcs import < meta_repos/robot.repos   # Robot1 팀
+vcs import < meta_repos/robot2.repos  # Robot2 팀
+
+# 4. ROS2 의존성 설치
 rosdep install --from-paths . --ignore-src -r -y
 
-# 4. 빌드
+# 5. 빌드
 source /opt/ros/${ROS_DISTRO}/setup.bash
 colcon build --symlink-install
 
-# 5. 환경 설정 (매 터미널마다 실행, 또는 .bashrc에 추가)
+# 6. 환경 설정 (매 터미널마다 실행, 또는 .bashrc에 추가)
 source ~/robot_ws/install/setup.bash
 
-# 6. 실행 테스트
-ros2 launch robot_main robot.launch.py
+# 7. 실행 테스트
+ros2 launch robot_main robot.launch.py    # Robot1
+ros2 launch robot2_main robot2.launch.py  # Robot2
 ```
 
 ## 저장소 구조
 
-| 저장소 | 설명 |
-|--------|------|
-| `meta_repos` | .repos 매니페스트 파일 |
-| `robot_interfaces` | 커스텀 msg, srv, action 정의 |
-| `robot_common` | 공용 유틸리티 라이브러리 |
-| `robot_main` | 메인 로봇 노드 및 launch 파일 |
-| `robot_tools` | 개발/디버깅 도구 |
+| 저장소 | 설명 | 사용 |
+|--------|------|------|
+| `meta_repos` | .repos 매니페스트 파일 | 공통 |
+| `robot_interfaces` | 커스텀 msg, srv, action 정의 | 공통 |
+| `robot_common` | 공용 유틸리티 라이브러리 | 공통 |
+| `robot_tools` | 개발/디버깅 도구 | 공통 |
+| `robot_main` | Robot1 메인 노드 및 launch | Robot1 |
+| `robot2_main` | Robot2 메인 노드 및 launch | Robot2 |
 
-## 설치
+## .repos 파일 구조
 
-### 1. 워크스페이스 클론
-
-```bash
-mkdir -p ~/robot_ws && cd ~/robot_ws
-vcs import < https://raw.githubusercontent.com/ingjae/meta_repos/main/robot.repos
 ```
-
-또는 직접 export된 repos 사용:
-
-```bash
-vcs import << EOF
-repositories:
-  robot_common:
-    type: git
-    url: https://github.com/ingjae/robot_common.git
-    version: main
-  robot_interfaces:
-    type: git
-    url: https://github.com/ingjae/robot_interfaces.git
-    version: main
-  robot_main:
-    type: git
-    url: https://github.com/ingjae/robot_main.git
-    version: main
-  robot_tools:
-    type: git
-    url: https://github.com/ingjae/robot_tools.git
-    version: main
-EOF
-```
-
-### 2. 의존성 설치
-
-```bash
-cd ~/robot_ws
-rosdep install --from-paths . --ignore-src -r -y
-```
-
-### 3. 빌드
-
-```bash
-source /opt/ros/${ROS_DISTRO}/setup.bash
-colcon build --symlink-install
-source install/setup.bash
+meta_repos/
+├── base.repos    # 공통 패키지만 (robot_common, robot_interfaces, robot_tools)
+├── robot.repos   # 공통 + robot_main
+└── robot2.repos  # 공통 + robot2_main
 ```
 
 ## 실행
 
-### 로봇 시스템 실행
+### Robot1
 
 ```bash
 ros2 launch robot_main robot.launch.py
+ros2 launch robot_main robot.launch.py robot_name:=my_robot
 ```
 
-파라미터 지정:
+### Robot2
 
 ```bash
-ros2 launch robot_main robot.launch.py robot_name:=my_robot
+ros2 launch robot2_main robot2.launch.py
+ros2 launch robot2_main robot2.launch.py robot_name:=my_robot2
 ```
 
 ### 개별 노드 실행
 
 ```bash
-# 로봇 노드
+# Robot1
 ros2 run robot_main robot_node.py
-
-# 센서 노드
 ros2 run robot_main sensor_node.py
+
+# Robot2
+ros2 run robot2_main robot2_node.py
+ros2 run robot2_main sensor_node.py
 ```
 
 ### 디버깅 도구

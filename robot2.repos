@@ -11,7 +11,7 @@ repositories:
     type: git
     url: https://github.com/ingjae/robot_tools.git
     version: main
-  robot_main:
+  robot2_main:
     type: git
-    url: https://github.com/ingjae/robot_main.git
+    url: https://github.com/ingjae/robot2_main.git
     version: main
