@@ -1,17 +1,17 @@
 repositories:
   robot_common:
     type: git
-    url: ../robot_common
+    url: https://github.com/ingjae/robot_common.git
     version: main
   robot_interfaces:
     type: git
-    url: ../robot_interfaces
+    url: https://github.com/ingjae/robot_interfaces.git
     version: main
   robot_main:
     type: git
-    url: ../robot_main
+    url: https://github.com/ingjae/robot_main.git
     version: main
   robot_tools:
     type: git
-    url: ../robot_tools
+    url: https://github.com/ingjae/robot_tools.git
     version: main
